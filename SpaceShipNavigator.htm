@@ -19,6 +19,22 @@
 		<script src="report_canvas.js"></script>
 		<script src="overlay_canvas.js"></script>
 		
+		<style>
+		.initial-params-div{
+			color:#ffffff; 
+			position:absolute; 
+			display:block; 
+			top:100; 
+			left:100; 
+			width:150; 
+			height:300; 
+			border:1px solid #ffffff;
+			font-size: 10px;
+		}
+		.initial-params-div-header{
+			text-align:center;
+		}
+		</style>
 	</head>
 	<body bgcolor="#000000" style="cursor:auto;">
 		<canvas id="mainCanvas" width=400 height=248>
@@ -27,9 +43,9 @@
 		<canvas id="overlayCanvas" width=400 height=248>
 			Your browser does not support the HTML5 Canvas Element!
 		</canvas>
-		<canvas id="reportCanvas" width=300 height=600>
+		<canvas id="reportCanvas" width=350 height=600>
 			Your browser does not support the HTML5 Canvas Element!
 		</canvas>
-		<div id="initialParams" style="color: #ffffff; position: absolute; display:block; top:100; left:100; width:150; height:300; border: 2px solid #ffffff;">This is where </br>start info</br>will go.</div>
+		<div id="initialParams" class="initial-params-div">This is where </br>start info</br>will go.</div>
 	</body>
 </html>

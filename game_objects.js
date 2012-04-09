@@ -82,7 +82,7 @@ function Vector2(X,Y){
 function PlayerCharacter(startPosition,fuelCapacity,goalPosition){
 	this.startPos = new Vector2(startPosition.x,startPosition.y);
 	this.pos = new Vector2(startPosition.x,startPosition.y);
-	this.color = "#FF0000";
+	this.color = "#0000FF";
 	this.shipGeometry = new Array(new Vector2(0,5), new Vector2(2.0943951,2), new Vector2(4.1887902,2));
 	this.fuelCapacity = fuelCapacity;
 	this.goalPos = goalPosition;
@@ -97,6 +97,7 @@ function PlayerCharacter(startPosition,fuelCapacity,goalPosition){
 	this.markerSize = 5;
 	this.decisionFrame = false;
 	this.decisionArray = new Array();
+	this.turnAccuity = 0.1;
 	this.update = function(bodies, dt){
 		var netForce = new Vector2(0,0);
 		var myGBody = new GBody(this.pos,this.vel,this.mass);
@@ -136,7 +137,7 @@ function PlayerCharacter(startPosition,fuelCapacity,goalPosition){
 			overlayContext.fillStyle = "rgb(255,255,255)";
 		overlayContext.fillRect(this.pos.x,this.pos.y,1,1);
 		
-		ctx.strokeStyle = "#0000FF";
+		ctx.strokeStyle = "#7777FF";
 		ctx.lineWidth = 1;
 		var startPoint = this.rotatePoint(new Vector2(this.pos.x+this.shipGeometry[0].y,this.pos.y),this.pos,this.orientation+this.shipGeometry[0].x);
 		ctx.beginPath();

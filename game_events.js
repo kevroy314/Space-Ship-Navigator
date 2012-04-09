@@ -15,13 +15,13 @@ function KeyUpEvent(e){
 
 function HandleKeyEvents(t){
 	if(keyStates[37]){ //Left Key
-		pc.turn(-0.1);
+		pc.turn(-pc.turnAccuity);
 	}
 	if(keyStates[38]){ //Up Key
 		pc.thrust(pc.power);
 	}
 	if(keyStates[39]){ //Right Key
-		pc.turn(0.1);
+		pc.turn(pc.turnAccuity);
 	}
 	if(keyStates[40]){ //Down Key
 		pc.thrust(-pc.power);
@@ -43,7 +43,7 @@ function WindowResizeEvent(){
 		overlayCanvas.style.top = canvas.style.top;
 		overlayCanvas.style.left = canvas.style.left;
 		reportCanvas.style.top = (window.innerHeight-reportCanvas.height)/2;
-		reportCanvas.style.left = 10;
+		reportCanvas.style.left = parseInt(canvas.style.left,boundryPadding)-reportCanvas.width-boundryPadding;
 	}
 }
 

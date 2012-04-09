@@ -1,6 +1,8 @@
 var overlayCanvas;
 var overlayContext;
-var previousTextArray = new Array(3);
+var previousTextArray;
+var overlayCanvasLeftPadding = 2;
+var overlayCanvasDisplayDecimalPlaces = 3;
 function InitializeOverlayCanvas(){
 	overlayCanvas = document.getElementById("overlayCanvas");
 	overlayContext = overlayCanvas.getContext("2d");
@@ -10,6 +12,7 @@ function InitializeOverlayCanvas(){
 	overlayCanvas.style.top = canvas.style.top;
 	overlayCanvas.style.left = canvas.style.left;
 	overlayCanvas.ondrag = CanvasDragEvent; //Drag event for the canvas
+	previousTextArray = new Array(3);
 	for(var i = 0; i < previousTextArray.length;i++)
 		previousTextArray[i] = new Array(3);
 }
@@ -20,13 +23,16 @@ function OverlayCanvasLoop(){
 		for(var i = 0; i < previousTextArray.length;i++)
 			overlayContext.fillText(previousTextArray[i][0],previousTextArray[i][1],previousTextArray[i][2]);
 	
+		var verticalPos = boundryPadding;
 		overlayContext.fillStyle = "#FF0000";
-		overlayContext.fillText("Time: " + elapsedTime,2,10);
-		previousTextArray[0] = new Array("Time: " + elapsedTime,2,10);
-		overlayContext.fillText("Best: " + pc.bestDistToGoal.toFixed(3),2,20);
-		previousTextArray[1] = new Array("Best: " + pc.bestDistToGoal.toFixed(3),2,20);
-		overlayContext.fillText("Fuel: " + pc.fuel,2,30);
-		previousTextArray[2] = new Array("Fuel: " + pc.fuel,2,30);
+		overlayContext.fillText("Time: " + elapsedTime,overlayCanvasLeftPadding,verticalPos);
+		previousTextArray[0] = new Array("Time: " + elapsedTime,overlayCanvasLeftPadding,boundryPadding);
+		verticalPos+=boundryPadding;
+		overlayContext.fillText("Best: " + pc.bestDistToGoal.toFixed(overlayCanvasDisplayDecimalPlaces),overlayCanvasLeftPadding,verticalPos);
+		previousTextArray[1] = new Array("Best: " + pc.bestDistToGoal.toFixed(overlayCanvasDisplayDecimalPlaces),overlayCanvasLeftPadding,verticalPos);
+		verticalPos+=boundryPadding;
+		overlayContext.fillText("Fuel: " + pc.fuel,overlayCanvasLeftPadding,verticalPos);
+		previousTextArray[2] = new Array("Fuel: " + pc.fuel,overlayCanvasLeftPadding,verticalPos);
 	}
 	setTimeout(OverlayCanvasLoop,renderInterval);
 }

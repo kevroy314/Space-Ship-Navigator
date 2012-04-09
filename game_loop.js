@@ -11,10 +11,17 @@ var keyStates;
 var currentTime = 0;
 var timeStep = 500;
 var renderInterval = 15;
-
+var decimalsToPrint = 2;
+var randomStartDecimalAccuracy = 2;
+var startFuel = 100;
+var boundryPadding = 10;
+var resetFadeSpeed = 0.3; //Higher means faster fade
+var gameStateTextColor = "#FF0000";
 var bodyField;
 var pc;
-
+var newGameInstructionFadeTime = 100;
+var textSpacing = 10;
+var winDistance = 10.000000;
 var restartFlag = false;
 var newLevelFlag = true;
 var levelStartState = new Array(2);
@@ -37,7 +44,7 @@ function Initialize(){
 	elapsedTime = 0;
 	
 	if(restartFlag){
-		fadeDegree = 0.3;
+		fadeDegree = resetFadeSpeed;
 		restartFlag = false;
 	}
 	else{
@@ -49,17 +56,18 @@ function Initialize(){
 	}
 	
 	if(newLevelFlag){
-		var start = new Vector2(Math.random()*(canvas.width-20)+10,Math.random()*(canvas.height-20)+10);
-		var goal = new Vector2(Math.random()*(canvas.width-20)+10,Math.random()*(canvas.height-20)+10);
+		var start = new Vector2(getRandomRoundedInRange(boundryPadding,canvas.width-boundryPadding,randomStartDecimalAccuracy),getRandomRoundedInRange(boundryPadding,canvas.height-boundryPadding,randomStartDecimalAccuracy));
+		var goal = new Vector2(getRandomRoundedInRange(boundryPadding,canvas.width-boundryPadding,randomStartDecimalAccuracy),getRandomRoundedInRange(boundryPadding,canvas.height-boundryPadding,randomStartDecimalAccuracy));
 		var requiredDistance = Math.sqrt(canvas.width*canvas.width+canvas.height*canvas.height)/3;
 	
 		while(Math.sqrt((start.x-goal.x)*(start.x-goal.x)+(start.y-goal.y)*(start.y-goal.y))<requiredDistance)
-			goal = new Vector2(Math.random()*(canvas.width-20)+10,Math.random(canvas.height-20)+10);
+			goal = new Vector2(getRandomRoundedInRange(boundryPadding,canvas.width-boundryPadding,randomStartDecimalAccuracy),getRandomRoundedInRange(boundryPadding,canvas.height-boundryPadding,randomStartDecimalAccuracy));
 		
-		pc = new PlayerCharacter(start,100,goal);
-		pcClone = new PlayerCharacter(start,100,goal);
+		pc = new PlayerCharacter(start,startFuel,goal);
+		pcClone = new PlayerCharacter(start,startFuel,goal);
 		levelStartState[0] = pcClone;
 		
+		//CURRENTLY CUSTOM
 		var bodies = new Array(NumBodies);
 		for(var i = 0; i < NumBodies/2; i++)
 			bodies[i] = new GBody(
@@ -72,6 +80,8 @@ function Initialize(){
 				new Vector2((Math.random()*MaxStartVelocity*2)-MaxStartVelocity,(Math.random()*MaxStartVelocity*2)-MaxStartVelocity),
 				Math.random()*(MaxStartMass/100-1)+1);
 		bodies[0] = new GBody(new Vector2(150,150),new Vector2(0,0),100000);
+		//END CURRENTLY CUSTOM
+	
 	
 		bodyField = new GBodyField(bodies);
 		var clonedBodyArray = new Array(bodies.length);
@@ -81,7 +91,7 @@ function Initialize(){
 		levelStartState[1] = clonedBodyField;
 	}
 	else{
-		pc = new PlayerCharacter(levelStartState[0].startPos,100,levelStartState[0].goalPos);
+		pc = new PlayerCharacter(levelStartState[0].startPos,startFuel,levelStartState[0].goalPos);
 		var clonedBodyArray = new Array(levelStartState[1].bodies.length);
 		for(var i = 0; i < clonedBodyArray.length;i++)
 			clonedBodyArray[i] = new GBody(new Vector2(levelStartState[1].bodies[i].pos.x,levelStartState[1].bodies[i].pos.y),new Vector2(levelStartState[1].bodies[i].vel.x,levelStartState[1].bodies[i].vel.y),levelStartState[1].bodies[i].m);
@@ -94,21 +104,25 @@ function Initialize(){
 	
 	context.fillStyle = "#FF0000";
 	context.fillText("Press R to Restart",canvas.width/3,canvas.height/3);
-	context.fillText("Press N to Play New Level",canvas.width/3,canvas.height/3+10);
+	context.fillText("Press N to Play New Level",canvas.width/3,canvas.height/3+textSpacing);
 	
 	divArea = document.getElementById("initialParams");
 	divArea.style.top = canvas.style.top;
-	divArea.style.left = parseInt(canvas.style.left,10)+canvas.width;
-	divArea.innerHTML = "<div style='text-align: center'>----Ship----</div>P(x,y): ("+pc.pos.x.toFixed(2)+","+pc.pos.y.toFixed(2)+")</br>V(x,y): ("+pc.vel.x.toFixed(2)+","+pc.vel.y.toFixed(2)+")</br>Mass: "+pc.mass+"</br>Start Fuel: "+pc.fuelCapacity+"</br>";
+	divArea.style.left = parseInt(canvas.style.left,boundryPadding)+canvas.width;
+	var simulationString = "<div class=\"initial-params-div-header\">----Simulation----</div>Time Step: "+timeStep+"</br>Num Bodies: "+NumBodies+"</br>G: "+G+"</br>G Dist Threshold: 2"+gravityDistanceThreshold+"</br>Note: The G Dist Threshold is the distance under which gravity is ignored to prevent singularities.</br>";
+	var shipString = "<div class=\"initial-params-div-header\">----Ship----</div>P(x,y): ("+pc.pos.x.toFixed(2)+","+pc.pos.y.toFixed(2)+")</br>V(x,y): ("+pc.vel.x.toFixed(2)+","+pc.vel.y.toFixed(2)+")</br>Mass: "+pc.mass+"</br>Start Fuel: "+pc.fuelCapacity+"</br>";
+	var goalString = "<div class=\"initial-params-div-header\">----Goal----</div>P(x,y): ("+pc.goalPos.x+","+pc.goalPos.y+")</br>";
+	var objectsString = "";
+	divArea.innerHTML = simulationString+shipString+goalString+objectsString;
 	
 	GameLoop();
 	OverlayCanvasLoop();
 	ReportCanvasLoop();
 }
 
-//var previousBestString = "";
-//var previousFuelString = "";
-//var previousElapsedTimeString = "";
+function getRandomRoundedInRange(min,max,roundToDec){
+	return parseFloat(((Math.random()*(max-min))+min).toFixed(roundToDec),10);
+}
 
 function Draw(){
 	context.fillStyle = "rgba(0,0,0,"+fadeDegree+")";
@@ -119,10 +133,10 @@ function Draw(){
 	bodyField.render(context);
 	pc.render(context);
 	
-	if(instructionDrawTimer<100){
+	if(instructionDrawTimer<newGameInstructionFadeTime){
 		context.fillStyle = "#FF0000";
 		context.fillText("Press R to Restart",canvas.width/3,canvas.height/3);
-		context.fillText("Press N to Play New Level",canvas.width/3,canvas.height/3+10);
+		context.fillText("Press N to Play New Level",canvas.width/3,canvas.height/3+textSpacing);
 		instructionDrawTimer++;
 	}
 }
@@ -140,12 +154,12 @@ function GameLoop(){
 	canvas.style.top = overlayCanvas.style.top;
 	canvas.style.left = overlayCanvas.style.left;
 	divArea.style.top = canvas.style.top;
-	divArea.style.left = parseInt(canvas.style.left,10)+canvas.width;
-	if(fadeDegree>1/tailLength) fadeDegree-=0.01;
+	divArea.style.left = parseInt(canvas.style.left,boundryPadding)+canvas.width;
+	if(fadeDegree>1/tailLength) fadeDegree-=(1/newGameInstructionFadeTime);
 	else fadeDegree=1/tailLength;
 	Update(timeStep);
 	Draw();	
-	if(pc.bestDistToGoal<10.00000){
+	if(pc.bestDistToGoal<winDistance){
 		killScreenDisplayed = true;
 		setTimeout(KillScreenLoop,renderInterval);
 	}
@@ -162,12 +176,12 @@ function DrawKillScreen(){
 	context.strokeStyle = "#FFFFFF";
 	context.strokeRect(0,0,canvas.width,canvas.height);
 	
-	context.fillStyle = "#FF0000";
+	context.fillStyle = gameStateTextColor;
 	context.fillText("Great Work!",canvas.width/2,canvas.height/2);
-	context.fillText("Time: " + elapsedTime,canvas.width/2,canvas.height/2+10);
-	context.fillText("Fuel Remaining: " + pc.fuel,canvas.width/2,canvas.height/2+20);
-	context.fillText("Press R to Replay",canvas.width/2,canvas.height/2+30);
-	context.fillText("Press N to Play New Level",canvas.width/2,canvas.height/2+40);
+	context.fillText("Time: " + elapsedTime,canvas.width/2,canvas.height/2+textSpacing);
+	context.fillText("Fuel Remaining: " + pc.fuel,canvas.width/2,canvas.height/2+textSpacing*2);
+	context.fillText("Press R to Replay",canvas.width/2,canvas.height/2+textSpacing*3);
+	context.fillText("Press N to Play New Level",canvas.width/2,canvas.height/2+textSpacing*4);
 }
 
 function UpdateKillScreen(){
@@ -175,7 +189,7 @@ function UpdateKillScreen(){
 	canvas.style.top = overlayCanvas.style.top;
 	canvas.style.left = overlayCanvas.style.left;
 	divArea.style.top = canvas.style.top;
-	divArea.style.left = parseInt(canvas.style.left,10)+canvas.width;
+	divArea.style.left = parseInt(canvas.style.left,boundryPadding)+canvas.width;
 	if(keyStates[82]){ //R Key
 		restartFlag = true;
 		newLevelFlag = false;
