@@ -30,7 +30,7 @@ function GBodyField(GBodies){
 			this.bodies[i].render(ctx);
 			
 			if(drawLabels){ //Broken because of object blur
-				overlayContext.fillStyle = "#FF0000";
+				overlayContext.fillStyle = gameStateTextColor;
 				var drawX = this.bodies[i].pos.x;
 				if(drawX+boundryPadding>overlayCanvas.width) drawX = overlayCanvas.width-boundryPadding;
 				else if (drawX-overlayCanvasLeftPadding<0) drawX = overlayCanvasLeftPadding;

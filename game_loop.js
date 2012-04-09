@@ -71,14 +71,14 @@ function Initialize(){
 		var bodies = new Array(NumBodies);
 		for(var i = 0; i < NumBodies/2; i++)
 			bodies[i] = new GBody(
-				new Vector2(Math.random()*canvas.width,Math.random()*canvas.height),
-				new Vector2((Math.random()*MaxStartVelocity*2)-MaxStartVelocity,(Math.random()*MaxStartVelocity*2)-MaxStartVelocity),
-				Math.random()*(MaxStartMass-1)+1);
+				new Vector2(getRandomRoundedInRange(0,canvas.width,randomStartDecimalAccuracy),getRandomRoundedInRange(0,canvas.height,randomStartDecimalAccuracy)),
+				new Vector2(getRandomRoundedInRange(0,MaxStartVelocity,randomStartDecimalAccuracy),getRandomRoundedInRange(0,MaxStartVelocity,randomStartDecimalAccuracy)),
+				getRandomRoundedInRange(1,MaxStartMass,randomStartDecimalAccuracy));
 		for(var i = NumBodies/2; i < NumBodies; i++)
 			bodies[i] = new GBody(
-				new Vector2(Math.random()*canvas.width,Math.random()*canvas.height),
-				new Vector2((Math.random()*MaxStartVelocity*2)-MaxStartVelocity,(Math.random()*MaxStartVelocity*2)-MaxStartVelocity),
-				Math.random()*(MaxStartMass/100-1)+1);
+				new Vector2(getRandomRoundedInRange(0,canvas.width,randomStartDecimalAccuracy),getRandomRoundedInRange(0,canvas.height,randomStartDecimalAccuracy)),
+				new Vector2(getRandomRoundedInRange(0,MaxStartVelocity,randomStartDecimalAccuracy),getRandomRoundedInRange(0,MaxStartVelocity,randomStartDecimalAccuracy)),
+				getRandomRoundedInRange(1,MaxStartMass/100,randomStartDecimalAccuracy));
 		bodies[0] = new GBody(new Vector2(150,150),new Vector2(0,0),100000);
 		//END CURRENTLY CUSTOM
 	
@@ -102,7 +102,7 @@ function Initialize(){
 	InitializeOverlayCanvas();
 	InitializeReportCanvas();
 	
-	context.fillStyle = "#FF0000";
+	context.fillStyle = gameStateTextColor;
 	context.fillText("Press R to Restart",canvas.width/3,canvas.height/3);
 	context.fillText("Press N to Play New Level",canvas.width/3,canvas.height/3+textSpacing);
 	
@@ -112,7 +112,10 @@ function Initialize(){
 	var simulationString = "<div class=\"initial-params-div-header\">----Simulation----</div>Time Step: "+timeStep+"</br>Num Bodies: "+NumBodies+"</br>G: "+G+"</br>G Dist Threshold: 2"+gravityDistanceThreshold+"</br>Note: The G Dist Threshold is the distance under which gravity is ignored to prevent singularities.</br>";
 	var shipString = "<div class=\"initial-params-div-header\">----Ship----</div>P(x,y): ("+pc.pos.x.toFixed(2)+","+pc.pos.y.toFixed(2)+")</br>V(x,y): ("+pc.vel.x.toFixed(2)+","+pc.vel.y.toFixed(2)+")</br>Mass: "+pc.mass+"</br>Start Fuel: "+pc.fuelCapacity+"</br>";
 	var goalString = "<div class=\"initial-params-div-header\">----Goal----</div>P(x,y): ("+pc.goalPos.x+","+pc.goalPos.y+")</br>";
-	var objectsString = "";
+	var objectsString = "<div class=\"initial-params-div-header\">----Objects----</div>";
+	for(var i = 0; i < bodyField.bodies.length;i++){
+		objectsString += "Number: "+i+"</br>Pos(x,y): ("+bodyField.bodies[i].pos.x+","+bodyField.bodies[i].pos.y+")</br>Vel(x,y): ("+bodyField.bodies[i].vel.x+","+bodyField.bodies[i].vel.y+")</br>Mass: "+bodyField.bodies[i].m+"</br></br>";
+	}
 	divArea.innerHTML = simulationString+shipString+goalString+objectsString;
 	
 	GameLoop();
@@ -134,7 +137,7 @@ function Draw(){
 	pc.render(context);
 	
 	if(instructionDrawTimer<newGameInstructionFadeTime){
-		context.fillStyle = "#FF0000";
+		context.fillStyle = gameStateTextColor;
 		context.fillText("Press R to Restart",canvas.width/3,canvas.height/3);
 		context.fillText("Press N to Play New Level",canvas.width/3,canvas.height/3+textSpacing);
 		instructionDrawTimer++;
