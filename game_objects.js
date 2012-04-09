@@ -28,15 +28,17 @@ function GBodyField(GBodies){
 	this.render = function(ctx){
 		for(var i = 0; i < this.bodies.length;i++){
 			this.bodies[i].render(ctx);
-			//Labels
-			/*ctx.fillStyle = "#FF0000";
-			var drawX = this.bodies[i].pos.x;
-			if(drawX+10>canvas.width) drawX = canvas.width-10;
-			else if (drawX-2<0) drawX = 2;
-			var drawY = this.bodies[i].pos.y;
-			if(drawY+5>canvas.height) drawY = canvas.height-5;
-			if(drawY-10<0) drawY = 10;
-			ctx.fillText(""+i,drawX,drawY);*/
+			
+			if(drawLabels){ //Broken because of object blur
+				overlayContext.fillStyle = "#FF0000";
+				var drawX = this.bodies[i].pos.x;
+				if(drawX+boundryPadding>overlayCanvas.width) drawX = overlayCanvas.width-boundryPadding;
+				else if (drawX-overlayCanvasLeftPadding<0) drawX = overlayCanvasLeftPadding;
+				var drawY = this.bodies[i].pos.y;
+				if(drawY+boundryPadding/2>overlayCanvas.height) drawY = overlayCanvas.height-boundryPadding/2;
+				if(drawY-boundryPadding<0) drawY = boundryPadding;
+				overlayContext.fillText(""+i,drawX,drawY);
+			}
 		}
 	}
 }
@@ -54,11 +56,13 @@ function GBody(Position, Velocity, Mass){
 	this.vel = Velocity;
 	this.m = Mass;
 	this.displaySize = Math.log(Mass);
+	this.color1 = "#FF7000";
+	this.color2 = "FF0000";
 	this.render = function(ctx){
 		var gradientSize = this.displaySize/4;
 		var gradient = ctx.createRadialGradient(this.pos.x-gradientSize,this.pos.y-gradientSize,gradientSize,this.pos.x,this.pos.y,this.displaySize);
-		gradient.addColorStop(0,"#FF7000");
-		gradient.addColorStop(0.5,"#FF0000");
+		gradient.addColorStop(0,this.color1);
+		gradient.addColorStop(0.5,this.color2);
 		gradient.addColorStop(1,"rgba(0,0,0,0)");
 		fillCircle(ctx,this.pos.x,this.pos.y,this.displaySize,gradient);
 	}
@@ -82,7 +86,13 @@ function Vector2(X,Y){
 function PlayerCharacter(startPosition,fuelCapacity,goalPosition){
 	this.startPos = new Vector2(startPosition.x,startPosition.y);
 	this.pos = new Vector2(startPosition.x,startPosition.y);
-	this.color = "#0000FF";
+	this.color = "#7777FF";
+	this.startColor1 = "#FFF0F0";
+	this.startColor2 = "#FFFF00";
+	this.goalColor1 = "#F0FFF0";
+	this.goalColor2 = "#00FF00";
+	this.decisionLineColor = "#0000FF";
+	this.idleLineColor = "#FFFFFF";
 	this.shipGeometry = new Array(new Vector2(0,5), new Vector2(2.0943951,2), new Vector2(4.1887902,2));
 	this.fuelCapacity = fuelCapacity;
 	this.goalPos = goalPosition;
@@ -96,8 +106,9 @@ function PlayerCharacter(startPosition,fuelCapacity,goalPosition){
 	this.mass = 0.00000000001;
 	this.markerSize = 5;
 	this.decisionFrame = false;
-	this.decisionArray = new Array();
+	this.decisionArray = new Array(); //Not implemented
 	this.turnAccuity = 0.1;
+	this.fuelRatio = 100000;
 	this.update = function(bodies, dt){
 		var netForce = new Vector2(0,0);
 		var myGBody = new GBody(this.pos,this.vel,this.mass);
@@ -116,28 +127,28 @@ function PlayerCharacter(startPosition,fuelCapacity,goalPosition){
 	this.render = function(ctx){
 		var gradientSize = this.markerSize/4;
 		var startGradient = ctx.createRadialGradient(this.startPos.x-gradientSize,this.startPos.y-gradientSize,gradientSize,this.startPos.x,this.startPos.y,this.markerSize);
-		startGradient.addColorStop(0,"#FFF0F0");
-		startGradient.addColorStop(0.5,"#FFFF00");
+		startGradient.addColorStop(0,this.startColor1);
+		startGradient.addColorStop(0.5,this.startColor2);
 		startGradient.addColorStop(1,"rgba(0,0,0,0)");
 		
 		fillCircle(ctx,this.startPos.x,this.startPos.y,this.markerSize,startGradient);
 		
 		var goalGradient = ctx.createRadialGradient(this.goalPos.x-gradientSize,this.goalPos.y-gradientSize,gradientSize,this.goalPos.x,this.goalPos.y,this.markerSize);
-		goalGradient.addColorStop(0,"#F0FFF0");
-		goalGradient.addColorStop(0.5,"#00FF00");
+		goalGradient.addColorStop(0,this.goalColor1);
+		goalGradient.addColorStop(0.5,this.goalColor2);
 		goalGradient.addColorStop(1,"rgba(0,0,0,0)");
 		
 		fillCircle(ctx,this.goalPos.x,this.goalPos.y,this.markerSize,goalGradient);
 		
 		if(this.decisionFrame){
-			overlayContext.fillStyle = "rgb(0,0,255)";
+			overlayContext.fillStyle = this.decisionLineColor;
 			this.decisionFrame = false;
 		}
 		else
-			overlayContext.fillStyle = "rgb(255,255,255)";
+			overlayContext.fillStyle = this.idleLineColor;
 		overlayContext.fillRect(this.pos.x,this.pos.y,1,1);
 		
-		ctx.strokeStyle = "#7777FF";
+		ctx.strokeStyle = this.color;
 		ctx.lineWidth = 1;
 		var startPoint = this.rotatePoint(new Vector2(this.pos.x+this.shipGeometry[0].y,this.pos.y),this.pos,this.orientation+this.shipGeometry[0].x);
 		ctx.beginPath();
@@ -151,9 +162,9 @@ function PlayerCharacter(startPosition,fuelCapacity,goalPosition){
 		ctx.stroke();
 	}
 	this.thrust = function(power){
-		if(this.fuel-Math.abs(power)*100000>=0){
+		if(this.fuel-Math.abs(power)*this.fuelRatio>=0){
 			this.decisionFrame = true;
-			this.fuel-=Math.abs(power)*100000;
+			this.fuel-=Math.abs(power)*this.fuelRatio;
 			this.vel = new Vector2((this.unitVel.x)*power+this.vel.x,(this.unitVel.y)*power+this.vel.y);
 		}
 	}

@@ -3,6 +3,8 @@ var overlayContext;
 var previousTextArray;
 var overlayCanvasLeftPadding = 2;
 var overlayCanvasDisplayDecimalPlaces = 3;
+var drawLabels = false; //Broken because of object blur
+
 function InitializeOverlayCanvas(){
 	overlayCanvas = document.getElementById("overlayCanvas");
 	overlayContext = overlayCanvas.getContext("2d");
@@ -24,7 +26,7 @@ function OverlayCanvasLoop(){
 			overlayContext.fillText(previousTextArray[i][0],previousTextArray[i][1],previousTextArray[i][2]);
 	
 		var verticalPos = boundryPadding;
-		overlayContext.fillStyle = "#FF0000";
+		overlayContext.fillStyle = gameStateTextColor;
 		overlayContext.fillText("Time: " + elapsedTime,overlayCanvasLeftPadding,verticalPos);
 		previousTextArray[0] = new Array("Time: " + elapsedTime,overlayCanvasLeftPadding,boundryPadding);
 		verticalPos+=boundryPadding;
