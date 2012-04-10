@@ -17,6 +17,7 @@ function InitializeOverlayCanvas(){
 	previousTextArray = new Array(3);
 	for(var i = 0; i < previousTextArray.length;i++)
 		previousTextArray[i] = new Array(3);
+	overlayCanvas.onmousedown = function(){overlayCanvas.focus();return false;};
 }
 
 function OverlayCanvasLoop(){

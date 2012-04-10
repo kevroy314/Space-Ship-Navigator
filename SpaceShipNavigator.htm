@@ -24,18 +24,45 @@
 		<style>
 		.initial-params-div{
 			color:#ffffff; 
-			position:absolute; 
+			position:relative;
 			display:block; 
-			top:100; 
-			left:100; 
+			margin-left: -9px;
+			margin-top: -8px;
 			width:150; 
 			height:300; 
 			border:1px solid #ffffff;
-			font-size: 10px;
-			overflow:auto;
+			font-size:10px;
+			overflow-y:auto;
 		}
 		.initial-params-div-header{
 			text-align:center;
+		}
+		.input-instructions-div{
+			color:#ffffff;
+			position:absolute;
+			display:block;
+			border:1px solid #ffffff;
+			font-size:10px;
+			height:52;
+			width:398;
+		}
+		.input-commands-textbox{
+			margin-top:2px;
+			margin-bottom:2px;
+			margin-left:2px;
+			margin-right:2px;
+			height:48px;
+			width:316px;
+			resize:none;
+			overflow:auto;
+		}
+		.execute-button{
+			margin-top:2px;
+			margin-bottom:2px;
+			margin-left:2px;
+			margin-right:2px;
+			position:absolute;
+			top:25%;
 		}
 		</style>
 	</head>
@@ -43,12 +70,18 @@
 		<canvas id="mainCanvas" width=400 height=248>
 			Your browser does not support the HTML5 Canvas Element!
 		</canvas>
-		<canvas id="overlayCanvas" width=400 height=248>
+		<canvas id="overlayCanvas" width=400 height=248 tabIndex="0">
 			Your browser does not support the HTML5 Canvas Element!
 		</canvas>
-		<canvas id="reportCanvas" width=350 height=600>
+		<canvas id="reportCanvas" width=350 height=600 tabIndex="1">
 			Your browser does not support the HTML5 Canvas Element!
 		</canvas>
-		<div id="initialParams" class="initial-params-div">This is where </br>start info</br>will go.</div>
+		<div id="initialParams" class="initial-params-div" tabIndex="2">Something went wrong!!! Try reloading?</div>
+		<div id="inputInstructions" class="input-instructions-div">
+			<form name="inputForm">
+				<textarea name="inputCommands" id="inputCommandsTextbox" class="input-commands-textbox" tabIndex="3">Enter your commands here...</textarea>
+				<input type="button" class="execute-button" value="Execute" onclick="executeButtonClick();" tabIndex="4"/>
+			</form>
+		</div>
 	</body>
 </html>

@@ -3,12 +3,14 @@ window.onkeyup = KeyUpEvent;
 window.onresize = WindowResizeEvent;
 
 function KeyDownEvent(e){
+	if(document.activeElement.id=="inputCommandsTextbox") return true;
 	keyStates[e.keyCode] = true;
 	if(e.keyCode==17||e.keyCode==82) return true;
 	return false;
 }
 
 function KeyUpEvent(e){
+	if(document.activeElement.id=="inputCommandsTextbox") return true;
 	keyStates[e.keyCode] = false;
 	return false;
 }
@@ -43,7 +45,7 @@ function WindowResizeEvent(){
 		overlayCanvas.style.top = canvas.style.top;
 		overlayCanvas.style.left = canvas.style.left;
 		reportCanvas.style.top = (window.innerHeight-reportCanvas.height)/2;
-		reportCanvas.style.left = parseInt(canvas.style.left,boundryPadding)-reportCanvas.width-boundryPadding;
+		reportCanvas.style.left = parseInt(canvas.style.left,10)-reportCanvas.width-boundryPadding;
 	}
 }
 

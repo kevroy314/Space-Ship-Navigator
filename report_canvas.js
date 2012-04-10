@@ -11,9 +11,10 @@ function InitializeReportCanvas(){
 	if(!hasBeenDragged){
 		reportCanvas.height = bodyField.bodies.length*textSpacing+2*textSpacing+reportCanvasLeftPadding;
 		reportCanvas.style.top = (window.innerHeight-reportCanvas.height)/2;
-		reportCanvas.style.left = parseInt(canvas.style.left,textSpacing)-reportCanvas.width-textSpacing;
+		reportCanvas.style.left = parseInt(canvas.style.left,10)-reportCanvas.width-textSpacing;
 	}
 	reportCanvas.ondrag = CanvasDragEvent; //Drag event for the canvas
+	reportCanvas.onmousedown = function(){reportCanvas.focus();return false;};
 }
 
 function ReportCanvasLoop(){

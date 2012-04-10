@@ -1,6 +1,7 @@
 window.onload = Initialize;
 
-var divArea;
+var outputDivArea;
+var inputDivArea;
 
 var canvas;
 var context;
@@ -106,9 +107,9 @@ function Initialize(){
 	context.fillText("Press R to Restart",canvas.width/3,canvas.height/3);
 	context.fillText("Press N to Play New Level",canvas.width/3,canvas.height/3+textSpacing);
 	
-	divArea = document.getElementById("initialParams");
-	divArea.style.top = canvas.style.top;
-	divArea.style.left = parseInt(canvas.style.left,boundryPadding)+canvas.width;
+	outputDivArea = document.getElementById("initialParams");
+	outputDivArea.style.top = canvas.style.top;
+	outputDivArea.style.left = parseInt(canvas.style.left,10)+canvas.width;
 	var simulationString = "<div class=\"initial-params-div-header\">----Simulation----</div>Time Step: "+timeStep+"</br>Num Bodies: "+NumBodies+"</br>G: "+G+"</br>G Dist Threshold: 2"+gravityDistanceThreshold+"</br>Note: The G Dist Threshold is the distance under which gravity is ignored to prevent singularities.</br>";
 	var shipString = "<div class=\"initial-params-div-header\">----Ship----</div>P(x,y): ("+pc.pos.x.toFixed(2)+","+pc.pos.y.toFixed(2)+")</br>V(x,y): ("+pc.vel.x.toFixed(2)+","+pc.vel.y.toFixed(2)+")</br>Mass: "+pc.mass+"</br>Start Fuel: "+pc.fuelCapacity+"</br>";
 	var goalString = "<div class=\"initial-params-div-header\">----Goal----</div>P(x,y): ("+pc.goalPos.x+","+pc.goalPos.y+")</br>";
@@ -116,8 +117,13 @@ function Initialize(){
 	for(var i = 0; i < bodyField.bodies.length;i++){
 		objectsString += "Number: "+i+"</br>Pos(x,y): ("+bodyField.bodies[i].pos.x+","+bodyField.bodies[i].pos.y+")</br>Vel(x,y): ("+bodyField.bodies[i].vel.x+","+bodyField.bodies[i].vel.y+")</br>Mass: "+bodyField.bodies[i].m+"</br></br>";
 	}
-	divArea.innerHTML = simulationString+shipString+goalString+objectsString;
+	outputDivArea.innerHTML = simulationString+shipString+goalString+objectsString;
 	
+	inputDivArea = document.getElementById("inputInstructions");
+	inputDivArea.style.top = parseInt(canvas.style.top,10)+canvas.height;
+	inputDivArea.style.left = canvas.style.left;
+	//inputDivArea.onmousedown = function(){outputDivArea.style.top=parseInt(canvas.style.top,10)+canvas.height;inputDivArea.onmousedown=null;return true;};
+
 	GameLoop();
 	OverlayCanvasLoop();
 	ReportCanvasLoop();
@@ -156,8 +162,10 @@ function GameLoop(){
 	//Make sure the canvas' are NSYNC
 	canvas.style.top = overlayCanvas.style.top;
 	canvas.style.left = overlayCanvas.style.left;
-	divArea.style.top = canvas.style.top;
-	divArea.style.left = parseInt(canvas.style.left,boundryPadding)+canvas.width;
+	outputDivArea.style.top = canvas.style.top;
+	outputDivArea.style.left = parseInt(canvas.style.left,10)+canvas.width;
+	inputDivArea.style.top = parseInt(canvas.style.top,10)+canvas.height;
+	inputDivArea.style.left = canvas.style.left;
 	if(fadeDegree>1/tailLength) fadeDegree-=(1/newGameInstructionFadeTime);
 	else fadeDegree=1/tailLength;
 	Update(timeStep);
@@ -191,8 +199,10 @@ function UpdateKillScreen(){
 	//Make sure the canvas' are NSYNC
 	canvas.style.top = overlayCanvas.style.top;
 	canvas.style.left = overlayCanvas.style.left;
-	divArea.style.top = canvas.style.top;
-	divArea.style.left = parseInt(canvas.style.left,boundryPadding)+canvas.width;
+	outputDivArea.style.top = canvas.style.top;
+	outputDivArea.style.left = parseInt(canvas.style.left,10)+canvas.width;
+	inputDivArea.style.top = parseInt(canvas.style.top,10)+canvas.height;
+	inputDivArea.style.left = canvas.style.left;
 	if(keyStates[82]){ //R Key
 		restartFlag = true;
 		newLevelFlag = false;
@@ -210,4 +220,8 @@ function KillScreenLoop(){
 		Initialize();
 	else
 		setTimeout(KillScreenLoop,renderInterval);
+}
+
+function executeButtonClick(){
+	alert("HEY!");
 }
