@@ -1,0 +1,26 @@
+<html>
+	<head>
+		<script type="text/javascript">
+			window.onload = function(){
+				var canvas = document.getElementById("mainCanvas") //this is a prerequisites for later steps
+				var context = canvas.getContext("2d"); //this is a prerequisites for later steps
+				
+				canvas.style.position = "fixed"; //can't remove this!
+				canvas.style.left = (window.innerWidth-canvas.width)/2; //can't change location!
+				
+				context.fillStyle = "#FF0000"; //can't change color!
+				
+				var outputDivArea = document.getElementById("initialParams");
+				outputDivArea.style.left = parseInt(canvas.style.left,10)+canvas.width; //can't change location!
+				
+				var inputArea = document.getElementById("fix_test");
+				inputArea.onmousedown = function(){outputDivArea.offsetTop=0;outputDivArea.style.top="0px";inputArea.onmousedown=null;return true;};
+			}
+		</script>
+	</head>
+	<body>
+		<canvas id="mainCanvas" width=400 height=248></canvas> 
+		<div id="initialParams" style="position:absolute; width:150; height:300; overflow-y:auto;">A software bug is the common term used to describe an error, flaw, mistake, failure, or fault in a computer program or system that produces an incorrect or unexpected result, or causes it to behave in unintended ways. Most bugs arise from mistakes and errors made by people in either a program's source code or its design, and a few are caused by compilers producing incorrect code. A program that contains a large number of bugs, and/or bugs that seriously interfere with its functionality, is said to be buggy. Reports detailing bugs in a program are commonly known as bug reports, fault reports, problem reports, trouble reports, change requests, and so forth. A software bug is the common term used to describe an error, flaw, mistake, failure, or fault in a computer program or system that produces an incorrect or unexpected result, or causes it to behave in unintended ways. Most bugs arise from mistakes and errors made by people in either a program's source code or its design, and a few are caused by compilers producing incorrect code. A program that contains a large number of bugs, and/or bugs that seriously interfere with its functionality, is said to be buggy. Reports detailing bugs in a program are commonly known as bug reports, fault reports, problem reports, trouble reports, change requests, and so forth.</div>
+		<textarea id="fix_test">Scroll, click me, then try to scroll again.</textarea>
+	</body>
+</html>
