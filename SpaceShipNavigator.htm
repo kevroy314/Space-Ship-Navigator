@@ -20,50 +20,52 @@
 		<script src="game_loop.js"></script>
 		<script src="report_canvas.js"></script>
 		<script src="overlay_canvas.js"></script>
+		<script src="utility_functions.js"></script>
 		
 		<style>
-		.initial-params-div{
-			color:#ffffff; 
-			position:relative;
-			display:block; 
-			margin-left: -9px;
-			margin-top: -8px;
-			width:150; 
-			height:300; 
-			border:1px solid #ffffff;
-			font-size:10px;
-			overflow-y:auto;
-		}
-		.initial-params-div-header{
-			text-align:center;
-		}
-		.input-instructions-div{
-			color:#ffffff;
-			position:absolute;
-			display:block;
-			border:1px solid #ffffff;
-			font-size:10px;
-			height:52;
-			width:398;
-		}
-		.input-commands-textbox{
-			margin-top:2px;
-			margin-bottom:2px;
-			margin-left:2px;
-			margin-right:2px;
-			height:48px;
-			width:316px;
-			resize:none;
-			overflow:auto;
-		}
-		.execute-button{
-			margin-top:2px;
-			margin-bottom:2px;
-			margin-left:2px;
-			margin-right:2px;
-			position:absolute;
-			top:25%;
-		}
+			.initial-params-div{
+				color:#ffffff; 
+				position:relative;
+				display:block; 
+				margin-left: -9px;
+				margin-top: -8px;
+				width:150; 
+				height:300; 
+				border:1px solid #ffffff;
+				font-size:10px;
+				overflow-y:auto;
+			}
+			.initial-params-div-header{
+				text-align:center;
+			}
+			.input-instructions-div{
+				color:#ffffff;
+				position:absolute;
+				display:block;
+				border:1px solid #ffffff;
+				font-size:10px;
+				height:52;
+				width:398;
+			}
+			.input-commands-textbox{
+				margin-top:2px;
+				margin-bottom:2px;
+				margin-left:2px;
+				margin-right:2px;
+				height:48px;
+				width:316px;
+				font-size:10px;
+				resize:none;
+				overflow:auto;
+			}
+			.execute-button{
+				margin-top:2px;
+				margin-bottom:2px;
+				margin-left:2px;
+				margin-right:2px;
+				position:absolute;
+				top:25%;
+			}
 		</style>
 	</head>
 	<body bgcolor="#000000" style="cursor:auto;">
@@ -79,7 +81,7 @@
 		<div id="initialParams" class="initial-params-div" tabIndex="2">Something went wrong!!! Try reloading?</div>
 		<div id="inputInstructions" class="input-instructions-div">
 			<form name="inputForm">
-				<textarea name="inputCommands" id="inputCommandsTextbox" class="input-commands-textbox" tabIndex="3">Enter your commands here...</textarea>
+				<textarea name="inputCommands" id="inputCommandsTextbox" class="input-commands-textbox" onClick="SelectAll('inputCommandsTextbox')" tabIndex="3">Enter your commands here...</textarea>
 				<input type="button" class="execute-button" value="Execute" onclick="executeButtonClick();" tabIndex="4"/>
 			</form>
 		</div>

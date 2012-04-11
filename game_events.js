@@ -1,7 +1,3 @@
-window.onkeydown = KeyDownEvent;
-window.onkeyup = KeyUpEvent;
-window.onresize = WindowResizeEvent;
-
 function KeyDownEvent(e){
 	if(document.activeElement.id=="inputCommandsTextbox") return true;
 	keyStates[e.keyCode] = true;

@@ -1,52 +1,72 @@
+//Event Registration
 window.onload = Initialize;
+window.onkeydown = KeyDownEvent;
+window.onkeyup = KeyUpEvent;
+window.onresize = WindowResizeEvent;
 
+//I/O Panel Variables
 var outputDivArea;
 var inputDivArea;
 
+//Primary Canvas Variables
 var canvas;
 var context;
-var hasBeenDragged;
 
+//Game Flags
+var hasBeenDragged = false;
+var restartFlag = false;
+var newLevelFlag = true;
+var killScreenDisplayed = false;
+
+//Keyboard State
 var keyStates;
 
+//Global Timing Variables
 var currentTime = 0;
 var timeStep = 500;
 var renderInterval = 15;
+var elapsedTime = 0;
+
+//Display Style Variables
 var decimalsToPrint = 2;
-var randomStartDecimalAccuracy = 2;
-var startFuel = 100;
 var boundryPadding = 10;
 var resetFadeSpeed = 0.3; //Higher means faster fade
-var gameStateTextColor = "#FF0000";
-var bodyField;
-var pc;
 var newGameInstructionFadeTime = 100;
 var textSpacing = 10;
-var winDistance = 10.000000;
-var restartFlag = false;
-var newLevelFlag = true;
-var levelStartState = new Array(2);
-var killScreenDisplayed = false;
-var NumBodies = 10;
-var MaxStartVelocity = 0.0003;
-var MaxStartMass = 10000;
+var gameStateTextColor = "#FF0000";
 var tailLength = 25;
 var fadeDegree = 1/tailLength;
-var elapsedTime;
-var instructionDrawTimer;
+var instructionDrawTimer = 0;
+var randomStartDecimalAccuracy = 2;
+
+//Simulation Variables
+var bodyField;
+var pc;
+var levelStartState = new Array(2);
+var NumBodies = 10;
+var startFuel = 100;
+var winDistance = 10.000000;
+var MaxStartVelocity = 0.0003;
+var MaxStartMass = 10000;
+var G = .00000000006673
+var gravityDistanceThreshold = 2;
 
 function Initialize(){
-	instructionDrawTimer = 0;
 	canvas = document.getElementById("mainCanvas")
 	canvas.ondrag = CanvasDragEvent;
 	context = canvas.getContext("2d");
-	keyStates = new Array();
-	killScreenDisplayed = false;
+
+	instructionDrawTimer = 0;
 	elapsedTime = 0;
 	
+	killScreenDisplayed = false;
+	
+	keyStates = new Array();
+	
 	if(restartFlag){
-		fadeDegree = resetFadeSpeed;
 		restartFlag = false;
+	
+		fadeDegree = resetFadeSpeed;
 	}
 	else{
 		hasBeenDragged = false;
@@ -73,12 +93,12 @@ function Initialize(){
 		for(var i = 0; i < NumBodies/2; i++)
 			bodies[i] = new GBody(
 				new Vector2(getRandomRoundedInRange(0,canvas.width,randomStartDecimalAccuracy),getRandomRoundedInRange(0,canvas.height,randomStartDecimalAccuracy)),
-				new Vector2(getRandomRoundedInRange(0,MaxStartVelocity,randomStartDecimalAccuracy),getRandomRoundedInRange(0,MaxStartVelocity,randomStartDecimalAccuracy)),
+				new Vector2(getRandomRoundedInRange(-MaxStartVelocity,MaxStartVelocity,randomStartDecimalAccuracy),getRandomRoundedInRange(-MaxStartVelocity,MaxStartVelocity,randomStartDecimalAccuracy)),
 				getRandomRoundedInRange(1,MaxStartMass,randomStartDecimalAccuracy));
 		for(var i = NumBodies/2; i < NumBodies; i++)
 			bodies[i] = new GBody(
 				new Vector2(getRandomRoundedInRange(0,canvas.width,randomStartDecimalAccuracy),getRandomRoundedInRange(0,canvas.height,randomStartDecimalAccuracy)),
-				new Vector2(getRandomRoundedInRange(0,MaxStartVelocity,randomStartDecimalAccuracy),getRandomRoundedInRange(0,MaxStartVelocity,randomStartDecimalAccuracy)),
+				new Vector2(getRandomRoundedInRange(-MaxStartVelocity,MaxStartVelocity,randomStartDecimalAccuracy),getRandomRoundedInRange(-MaxStartVelocity,MaxStartVelocity,randomStartDecimalAccuracy)),
 				getRandomRoundedInRange(1,MaxStartMass/100,randomStartDecimalAccuracy));
 		bodies[0] = new GBody(new Vector2(150,150),new Vector2(0,0),100000);
 		//END CURRENTLY CUSTOM
@@ -122,15 +142,10 @@ function Initialize(){
 	inputDivArea = document.getElementById("inputInstructions");
 	inputDivArea.style.top = parseInt(canvas.style.top,10)+canvas.height;
 	inputDivArea.style.left = canvas.style.left;
-	//inputDivArea.onmousedown = function(){outputDivArea.style.top=parseInt(canvas.style.top,10)+canvas.height;inputDivArea.onmousedown=null;return true;};
 
 	GameLoop();
 	OverlayCanvasLoop();
 	ReportCanvasLoop();
-}
-
-function getRandomRoundedInRange(min,max,roundToDec){
-	return parseFloat(((Math.random()*(max-min))+min).toFixed(roundToDec),10);
 }
 
 function Draw(){
@@ -151,25 +166,25 @@ function Draw(){
 }
 
 function Update(dt){
-	elapsedTime +=dt;
+	elapsedTime += dt;
+	currentTime += dt;
+	
 	bodyField.update(dt);
 	pc.update(bodyField.bodies,dt);
-	currentTime += dt;
+	
 	HandleKeyEvents();
 }
 
 function GameLoop(){
-	//Make sure the canvas' are NSYNC
-	canvas.style.top = overlayCanvas.style.top;
-	canvas.style.left = overlayCanvas.style.left;
-	outputDivArea.style.top = canvas.style.top;
-	outputDivArea.style.left = parseInt(canvas.style.left,10)+canvas.width;
-	inputDivArea.style.top = parseInt(canvas.style.top,10)+canvas.height;
-	inputDivArea.style.left = canvas.style.left;
+	SyncDisplayLocations();
+	
 	if(fadeDegree>1/tailLength) fadeDegree-=(1/newGameInstructionFadeTime);
 	else fadeDegree=1/tailLength;
+	
 	Update(timeStep);
+	
 	Draw();	
+	
 	if(pc.bestDistToGoal<winDistance){
 		killScreenDisplayed = true;
 		setTimeout(KillScreenLoop,renderInterval);
@@ -196,13 +211,8 @@ function DrawKillScreen(){
 }
 
 function UpdateKillScreen(){
-	//Make sure the canvas' are NSYNC
-	canvas.style.top = overlayCanvas.style.top;
-	canvas.style.left = overlayCanvas.style.left;
-	outputDivArea.style.top = canvas.style.top;
-	outputDivArea.style.left = parseInt(canvas.style.left,10)+canvas.width;
-	inputDivArea.style.top = parseInt(canvas.style.top,10)+canvas.height;
-	inputDivArea.style.left = canvas.style.left;
+	SyncDisplayLocations();
+	
 	if(keyStates[82]){ //R Key
 		restartFlag = true;
 		newLevelFlag = false;
@@ -215,7 +225,9 @@ function UpdateKillScreen(){
 
 function KillScreenLoop(){
 	DrawKillScreen();
+	
 	UpdateKillScreen();
+	
 	if(restartFlag)
 		Initialize();
 	else

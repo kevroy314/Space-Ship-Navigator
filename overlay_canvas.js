@@ -8,15 +8,19 @@ var drawLabels = false; //Broken because of object blur
 function InitializeOverlayCanvas(){
 	overlayCanvas = document.getElementById("overlayCanvas");
 	overlayContext = overlayCanvas.getContext("2d");
+	
 	overlayCanvas.style.position = "fixed";
 	overlayCanvas.height = canvas.height;
 	overlayCanvas.width = canvas.width;
 	overlayCanvas.style.top = canvas.style.top;
 	overlayCanvas.style.left = canvas.style.left;
+	
 	overlayCanvas.ondrag = CanvasDragEvent; //Drag event for the canvas
+	
 	previousTextArray = new Array(3);
 	for(var i = 0; i < previousTextArray.length;i++)
 		previousTextArray[i] = new Array(3);
+		
 	overlayCanvas.onmousedown = function(){overlayCanvas.focus();return false;};
 }
 

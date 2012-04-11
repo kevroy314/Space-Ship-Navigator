@@ -1,5 +1,7 @@
-var G = .00000000006673
-var gravityDistanceThreshold = 2;
+function Vector2(X,Y){
+	this.x = X;
+	this.y = Y;
+}
 
 function GBodyField(GBodies){
 	this.bodies = GBodies;
@@ -43,14 +45,6 @@ function GBodyField(GBodies){
 	}
 }
 
-function fillCircle(ctx,x,y,r,color){
-	ctx.fillStyle = color;
-	ctx.beginPath();
-	ctx.arc(x,y,r, 0, Math.PI*2, true); 
-	ctx.closePath();
-	ctx.fill();
-}
-
 function GBody(Position, Velocity, Mass){
 	this.pos = Position;
 	this.vel = Velocity;
@@ -76,11 +70,6 @@ function GBody(Position, Velocity, Mass){
 		dy*=Fmodified;
 		return new Vector2(dx,dy);
 	}
-}
-
-function Vector2(X,Y){
-	this.x = X;
-	this.y = Y;
 }
 
 function PlayerCharacter(startPosition,fuelCapacity,goalPosition){
@@ -150,11 +139,11 @@ function PlayerCharacter(startPosition,fuelCapacity,goalPosition){
 		
 		ctx.strokeStyle = this.color;
 		ctx.lineWidth = 1;
-		var startPoint = this.rotatePoint(new Vector2(this.pos.x+this.shipGeometry[0].y,this.pos.y),this.pos,this.orientation+this.shipGeometry[0].x);
+		var startPoint = rotatePoint(new Vector2(this.pos.x+this.shipGeometry[0].y,this.pos.y),this.pos,this.orientation+this.shipGeometry[0].x);
 		ctx.beginPath();
 		ctx.moveTo(startPoint.x,startPoint.y);
 		for(var i = 1; i < this.shipGeometry.length;i++){
-			var point = this.rotatePoint(new Vector2(this.pos.x+this.shipGeometry[i].y,this.pos.y),this.pos,this.orientation+this.shipGeometry[i].x);
+			var point = rotatePoint(new Vector2(this.pos.x+this.shipGeometry[i].y,this.pos.y),this.pos,this.orientation+this.shipGeometry[i].x);
 			ctx.lineTo(point.x,point.y);
 		}
 		ctx.lineTo(startPoint.x,startPoint.y);
@@ -173,18 +162,5 @@ function PlayerCharacter(startPosition,fuelCapacity,goalPosition){
 		this.unitVel.x = Math.cos(this.orientation);
 		this.unitVel.y = Math.sin(this.orientation);
 		
-	}
-	this.rotatePoint = function(rotatingPoint, fixedPoint, angle){
-		var s = Math.sin(angle);
-		var c = Math.cos(angle);
-		
-		var p = new Vector2(rotatingPoint.x-fixedPoint.x,rotatingPoint.y-fixedPoint.y);
-		var newX = p.x*c - p.y*s;
-		var newY = p.x*s + p.y*c;
-		
-		p.x = newX+fixedPoint.x;
-		p.y = newY+fixedPoint.y;
-		
-		return p;
 	}
 }
