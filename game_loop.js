@@ -37,7 +37,7 @@ var gameStateTextColor = "#FF0000";
 var tailLength = 25;
 var fadeDegree = 1/tailLength;
 var instructionDrawTimer = 0;
-var randomStartDecimalAccuracy = 2;
+var randomStartDecimalAccuracy = 5;
 
 //Simulation Variables
 var bodyField;
@@ -131,7 +131,7 @@ function Initialize(){
 	outputDivArea.style.top = canvas.style.top;
 	outputDivArea.style.left = parseInt(canvas.style.left,10)+canvas.width;
 	var simulationString = "<div class=\"initial-params-div-header\">----Simulation----</div>Time Step: "+timeStep+"</br>Num Bodies: "+NumBodies+"</br>G: "+G+"</br>G Dist Threshold: 2"+gravityDistanceThreshold+"</br>Note: The G Dist Threshold is the distance under which gravity is ignored to prevent singularities.</br>";
-	var shipString = "<div class=\"initial-params-div-header\">----Ship----</div>P(x,y): ("+pc.pos.x.toFixed(2)+","+pc.pos.y.toFixed(2)+")</br>V(x,y): ("+pc.vel.x.toFixed(2)+","+pc.vel.y.toFixed(2)+")</br>Mass: "+pc.mass+"</br>Start Fuel: "+pc.fuelCapacity+"</br>";
+	var shipString = "<div class=\"initial-params-div-header\">----Ship----</div>P(x,y): ("+pc.pos.x.toFixed(2)+","+pc.pos.y.toFixed(2)+")</br>V(x,y): ("+pc.vel.x.toFixed(2)+","+pc.vel.y.toFixed(2)+")</br>Mass: "+pc.mass+"</br>Start Fuel: "+pc.fuelCapacity+"</br>Fuel Ratio: "+pc.fuelRatio+":1</br>";
 	var goalString = "<div class=\"initial-params-div-header\">----Goal----</div>P(x,y): ("+pc.goalPos.x+","+pc.goalPos.y+")</br>";
 	var objectsString = "<div class=\"initial-params-div-header\">----Objects----</div>";
 	for(var i = 0; i < bodyField.bodies.length;i++){
@@ -235,5 +235,13 @@ function KillScreenLoop(){
 }
 
 function executeButtonClick(){
-	alert("HEY!");
+	var input = document.getElementById("inputCommandsTextbox").value;
+	input = input.replace(/\s*/g, ""); //remove white space
+	input = input.substring(1); //remove first character
+	input = input.replace(/\]\[/g,",");
+	input = input.substring(0,input.length-1);
+	var values = input.split(",");
+	restartFlag = true;
+	newLevelFlag = false;
+	Initialize();
 }

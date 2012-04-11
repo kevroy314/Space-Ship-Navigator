@@ -43,6 +43,7 @@ function WindowResizeEvent(){
 		reportCanvas.style.top = (window.innerHeight-reportCanvas.height)/2;
 		reportCanvas.style.left = parseInt(canvas.style.left,10)-reportCanvas.width-boundryPadding;
 	}
+	SyncDisplayLocations();
 }
 
 function CanvasDragEvent(){
