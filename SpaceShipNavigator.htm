@@ -21,6 +21,7 @@
 		<script src="report_canvas.js"></script>
 		<script src="overlay_canvas.js"></script>
 		<script src="utility_functions.js"></script>
+		<script src="background_canvas.js"></script>
 		
 		<style>
 			.initial-params-div{
@@ -66,9 +67,15 @@
 				position:absolute;
 				top:25%;
 			}
+			.background{
+				position:absolute;
+			}
 		</style>
 	</head>
 	<body bgcolor="#000000" style="cursor:auto;">
+		<canvas id="backgroundCanvas" class="background" width=800 height=600>
+			Your browser does not support the HTML5 Canvas Element!
+		</canvas>
 		<canvas id="mainCanvas" width=400 height=248>
 			Your browser does not support the HTML5 Canvas Element!
 		</canvas>

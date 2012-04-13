@@ -147,9 +147,12 @@ function Initialize(){
 	inputDivArea.style.top = parseInt(canvas.style.top,10)+canvas.height;
 	inputDivArea.style.left = canvas.style.left;
 
+	InitializeBackgroundCanvas();
+	
 	GameLoop();
 	OverlayCanvasLoop();
 	ReportCanvasLoop();
+	BackgroundCanvasLoop();
 }
 
 function Draw(){
