@@ -30,7 +30,7 @@
 				margin-left: -9px;
 				margin-top: -8px;
 				width:150; 
-				height:300; 
+				height:325; 
 				border:1px solid #ffffff;
 				font-size:10px;
 				overflow-y:auto;
@@ -44,7 +44,7 @@
 				display:block;
 				border:1px solid #ffffff;
 				font-size:10px;
-				height:52;
+				height:77;
 				width:398;
 			}
 			.input-commands-textbox{
@@ -52,7 +52,7 @@
 				margin-bottom:2px;
 				margin-left:2px;
 				margin-right:2px;
-				height:48px;
+				height:73px;
 				width:316px;
 				font-size:10px;
 				resize:none;
@@ -81,7 +81,10 @@
 		<div id="initialParams" class="initial-params-div" tabIndex="2">Something went wrong!!! Try reloading?</div>
 		<div id="inputInstructions" class="input-instructions-div">
 			<form name="inputForm">
-				<textarea name="inputCommands" id="inputCommandsTextbox" class="input-commands-textbox" onClick="SelectAll('inputCommandsTextbox')" tabIndex="3">Enter your commands here as comma separated [Time,Radians_Direction,Fuel_Use] values...</textarea>
+				<textarea name="inputCommands" id="inputCommandsTextbox" class="input-commands-textbox" onClick="SelectAll('inputCommandsTextbox')" tabIndex="3" placeholder="Enter your commands here as comma separated [Time,Radians_Direction,Fuel_Use] values...
+         -Time will be rounded to the nearest time step. 
+         -Direction will be mod 2*pi and relative changes. 
+         -Fuel_Use will be divided by the Fuel Ratio. "></textarea>
 				<input type="button" class="execute-button" value="Execute" onclick="executeButtonClick();" tabIndex="4"/>
 			</form>
 		</div>

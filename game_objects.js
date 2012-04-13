@@ -94,7 +94,7 @@ function PlayerCharacter(startPosition,fuelCapacity,goalPosition){
 	this.orientation = 0.0;
 	this.mass = 0.00000000001;
 	this.markerSize = 5;
-	this.decisionFrame = false;
+	this.decisionFrameCount = 0;
 	this.decisionArray = new Array(); //Not implemented
 	this.turnAccuity = 0.1;
 	this.fuelRatio = 100000;
@@ -129,9 +129,9 @@ function PlayerCharacter(startPosition,fuelCapacity,goalPosition){
 		
 		fillCircle(ctx,this.goalPos.x,this.goalPos.y,this.markerSize,goalGradient);
 		
-		if(this.decisionFrame){
+		if(this.decisionFrameCount>0){
 			overlayContext.fillStyle = this.decisionLineColor;
-			this.decisionFrame = false;
+			this.decisionFrameCount--;
 		}
 		else
 			overlayContext.fillStyle = this.idleLineColor;
@@ -152,7 +152,7 @@ function PlayerCharacter(startPosition,fuelCapacity,goalPosition){
 	}
 	this.thrust = function(power){
 		if(this.fuel-Math.abs(power)*this.fuelRatio>=0){
-			this.decisionFrame = true;
+			this.decisionFrameCount = 10;
 			this.fuel-=Math.abs(power)*this.fuelRatio;
 			this.vel = new Vector2((this.unitVel.x)*power+this.vel.x,(this.unitVel.y)*power+this.vel.y);
 		}
@@ -163,4 +163,10 @@ function PlayerCharacter(startPosition,fuelCapacity,goalPosition){
 		this.unitVel.y = Math.sin(this.orientation);
 		
 	}
+}
+
+function Decision(time, direction, power){
+	this.time = time;
+	this.direction = direction;
+	this.power = power;
 }

@@ -1,4 +1,5 @@
 function KeyDownEvent(e){
+	instructionMode=false;
 	if(document.activeElement.id=="inputCommandsTextbox") return true;
 	keyStates[e.keyCode] = true;
 	if(e.keyCode==17||e.keyCode==82) return true;
@@ -6,6 +7,7 @@ function KeyDownEvent(e){
 }
 
 function KeyUpEvent(e){
+	instructionMode=false;
 	if(document.activeElement.id=="inputCommandsTextbox") return true;
 	keyStates[e.keyCode] = false;
 	return false;

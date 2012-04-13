@@ -37,3 +37,7 @@ function SyncDisplayLocations(){
 	inputDivArea.style.top = parseInt(canvas.style.top,10)+canvas.height;
 	inputDivArea.style.left = canvas.style.left;
 }
+
+function RoundToSignificance(num, sig){
+	return Math.round(num/sig)*sig;
+}

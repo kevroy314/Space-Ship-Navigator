@@ -17,6 +17,7 @@ var hasBeenDragged = false;
 var restartFlag = false;
 var newLevelFlag = true;
 var killScreenDisplayed = false;
+var instructionMode = false;
 
 //Keyboard State
 var keyStates;
@@ -50,6 +51,8 @@ var MaxStartVelocity = 0.0003;
 var MaxStartMass = 10000;
 var G = .00000000006673
 var gravityDistanceThreshold = 2;
+var decisions;
+var lastDecision;
 
 function Initialize(){
 	canvas = document.getElementById("mainCanvas")
@@ -57,6 +60,7 @@ function Initialize(){
 	context = canvas.getContext("2d");
 
 	instructionDrawTimer = 0;
+	currentTime = 0;
 	elapsedTime = 0;
 	
 	killScreenDisplayed = false;
@@ -169,6 +173,15 @@ function Update(dt){
 	elapsedTime += dt;
 	currentTime += dt;
 	
+	if(instructionMode&&lastDecision<decisions.length-1){
+		while(decisions[lastDecision].time==currentTime){
+			pc.turn(decisions[lastDecision].direction);
+			pc.thrust(decisions[lastDecision].power);
+			pc.decisionFrameCount = 10;
+			lastDecision++;
+		}
+	}
+	
 	bodyField.update(dt);
 	pc.update(bodyField.bodies,dt);
 	
@@ -241,7 +254,22 @@ function executeButtonClick(){
 	input = input.replace(/\]\[/g,",");
 	input = input.substring(0,input.length-1);
 	var values = input.split(",");
+	decisions = new Array(values.length/3);
+	input.innerHTML = "";
+	var reformattedVal = "";
+	for(var i = 0; i < values.length/3;i++){
+		decisions[i] = new Decision();
+		decisions[i].time = RoundToSignificance(values[i*3],timeStep);
+		decisions[i].direction = values[i*3+1]%(2*Math.PI);
+		decisions[i].power = values[i*3+2]/pc.fuelRatio;
+	}
+	decisions.sort(function(a,b){return (a.time>b.time)?1:((b.time>a.time)?-1:0);});
+	lastDecision = 0;
+	for(var i = 0; i < decisions.length;i++)
+		reformattedVal+="["+decisions[i].time+","+decisions[i].direction+","+decisions[i].power*pc.fuelRatio+"]";
+	document.getElementById("inputCommandsTextbox").value = reformattedVal;
 	restartFlag = true;
 	newLevelFlag = false;
+	instructionMode = true;
 	Initialize();
 }
