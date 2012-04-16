@@ -58,7 +58,9 @@ function Initialize(){
 	canvas = document.getElementById("mainCanvas")
 	canvas.ondrag = CanvasDragEvent;
 	context = canvas.getContext("2d");
-
+	context.fillStyle = "#000000";
+	context.fillRect(0,0,canvas.width,canvas.height);
+	
 	instructionDrawTimer = 0;
 	currentTime = 0;
 	elapsedTime = 0;
@@ -147,12 +149,12 @@ function Initialize(){
 	inputDivArea.style.top = parseInt(canvas.style.top,10)+canvas.height;
 	inputDivArea.style.left = canvas.style.left;
 
-	InitializeBackgroundCanvas();
+	InitializeInstructionCanvas();
 	
 	GameLoop();
 	OverlayCanvasLoop();
 	ReportCanvasLoop();
-	BackgroundCanvasLoop();
+	InstructionCanvasLoop();
 }
 
 function Draw(){
