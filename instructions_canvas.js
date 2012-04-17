@@ -7,6 +7,10 @@ var instructionCanvas;
 var instructionContext;
 
 var instructionRenderInterval = 30;
+var fadeSpeed = 0.1;
+var fadeAmount = 0;
+var fadeFlag = false;
+var faded = false
 
 var mouseDown;
 var mouseDownPos;
@@ -35,13 +39,20 @@ function InitializeInstructionCanvas(){
 	instructionCanvas.width = document.body.offsetWidth;
 	instructionCanvas.height = document.body.offsetHeight;
 
+	var xCenter = instructionCanvas.width/2;
+	var yCenter = instructionCanvas.height/2;
+	var xOffset = instructionCanvas.width/2.5;
+	var yOffset = instructionCanvas.height/2.5;
+	
 	instructions = new Array();
-	instructions[0] = new Instruction(reportCanvas.offsetLeft+reportCanvas.width/2,reportCanvas.offsetTop+reportCanvas.height/2,50,50,new Array("1: THIS IS A TEST!","1: THIS IS A SECOND LINE!"));
-	instructions[1] = new Instruction(mainCanvas.offsetLeft+mainCanvas.width/2,mainCanvas.offsetTop+mainCanvas.height/2,instructionCanvas.width-150,instructionCanvas.height-50,new Array("2: THIS IS A TEST!"));
-	instructions[2] = new Instruction(inputDiv.offsetLeft+parseInt(inputDiv.offsetWidth,10)/2,inputDiv.offsetTop+parseInt(inputDiv.offsetHeight,10)/2,instructionCanvas.width-150,50,new Array("3: THIS IS A TEST!","3: THIS IS A SECOND LINE!","3: THIS IS A THIRD LINE!"));
-	instructions[3] = new Instruction(outputDiv.offsetLeft+outputDiv.offsetWidth/2,outputDiv.offsetTop+outputDiv.offsetHeight/2,50,instructionCanvas.height-50,new Array("4: THIS IS A TEST!"));
+	instructions[0] = new Instruction(reportCanvas.offsetLeft+reportCanvas.width/2,reportCanvas.offsetTop+reportCanvas.height/2,xCenter-xOffset,yCenter-yOffset,new Array("This is the report canvas. It shows","the current values of simulation","parameters. They are rounded","and do not represent the full","precisions of the simulation."));
+	instructions[1] = new Instruction(mainCanvas.offsetLeft+mainCanvas.width/2,mainCanvas.offsetTop+mainCanvas.height/2,xCenter+xOffset,yCenter-yOffset,new Array("This is the main simulation","area. It shows the state of the","simulation. You can control the ","ship manually with the arrow keys.","R replays the level.","N starts a new level."));
+	instructions[2] = new Instruction(inputDiv.offsetLeft+parseInt(inputDiv.offsetWidth,10)/2,inputDiv.offsetTop+parseInt(inputDiv.offsetHeight,10)/2,xCenter-xOffset,yCenter+yOffset,new Array("In addition to controlling the","ship manually, you can input","instructions which will be","executed at given moments."));
+	instructions[3] = new Instruction(outputDiv.offsetLeft+outputDiv.offsetWidth/2,outputDiv.offsetTop+outputDiv.offsetHeight/2,xCenter+xOffset,yCenter+yOffset,new Array("This is the output window. It","shows the precise initial conditions","of the simulation (nothing is rounded)","as well as some simulation parameters."));
+	instructions[4] = new Instruction(xCenter,10,xCenter,10,new Array("Press ESC to Close Instructions"));
 	for(var i = 0; i < instructions.length;i++)
 		instructions[i].init(instructionContext);
+	instructions[4].iX = xCenter-instructions[4].width/2;
 }
 
 function instructionMouseDownEvent(e){
@@ -85,7 +96,17 @@ function InstructionCanvasLoop(){
 	
 	mouseOffset = {X: 0, Y: 0};
 	
-	setTimeout(InstructionCanvasLoop,instructionRenderInterval);
+	if(fadeFlag){
+		instructionContext.fillStyle = "rgba(0,0,0,"+fadeAmount+")";
+		instructionContext.fillRect(0,0,instructionCanvas.width,instructionCanvas.height);
+		fadeAmount+=fadeSpeed;
+	}
+	
+	if(fadeAmount>=1)
+		faded = true;
+	
+	if(!faded)
+		setTimeout(InstructionCanvasLoop,instructionRenderInterval);
 }
 
 function EngineCounter(min, max, step, increment, startVal){

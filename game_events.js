@@ -14,6 +14,9 @@ function KeyUpEvent(e){
 }
 
 function HandleKeyEvents(t){
+	if(keyStates[27]){ //ESC Key
+		fadeFlag = true;
+	}
 	if(keyStates[37]){ //Left Key
 		pc.turn(-pc.turnAccuity);
 	}
