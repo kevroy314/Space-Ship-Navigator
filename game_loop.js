@@ -126,7 +126,7 @@ function Initialize(){
 		bodyField = clonedBodyField;
 	}
 	
-	InitializeOverlayCanvas();
+	InitializeOverlayCanvas(canvas);
 	InitializeReportCanvas();
 	
 	context.fillStyle = gameStateTextColor;
@@ -152,9 +152,6 @@ function Initialize(){
 	InitializeInstructionCanvas();
 	
 	GameLoop();
-	OverlayCanvasLoop();
-	ReportCanvasLoop();
-	InstructionCanvasLoop();
 }
 
 function Draw(){
@@ -205,6 +202,7 @@ function GameLoop(){
 	
 	if(pc.bestDistToGoal<winDistance){
 		killScreenDisplayed = true;
+		overlayRunning = false;
 		setTimeout(KillScreenLoop,renderInterval);
 	}
 	else if(restartFlag==true)
@@ -229,35 +227,32 @@ function DrawKillScreen(){
 }
 
 function UpdateKillScreen(){
+	//Make sure our locations are in sync for the docked elements
 	SyncDisplayLocations();
 	
-	if(keyStates[82]){ //R Key
-		restartFlag = true;
-		newLevelFlag = false;
-	}
-	if(keyStates[78]){ //N Key
-		newLevelFlag = true;
-		restartFlag = true;
-	}
+	//Handle interface key events (no ship events anymore!)
+	HandleInterfaceKeys();
 }
 
+//Loop if we're in a kill screen state
 function KillScreenLoop(){
-	DrawKillScreen();
+	DrawKillScreen(); //Draw
 	
-	UpdateKillScreen();
+	UpdateKillScreen(); //Update
 	
-	if(restartFlag)
+	if(restartFlag) //If we're told to restart, call Initialize
 		Initialize();
-	else
+	else //Otherwise keep looping!
 		setTimeout(KillScreenLoop,renderInterval);
 }
 
 function executeButtonClick(){
+	//Get the input command box text
 	var input = document.getElementById("inputCommandsTextbox").value;
 	input = input.replace(/\s*/g, ""); //remove white space
 	input = input.substring(1); //remove first character
-	input = input.replace(/\]\[/g,",");
-	input = input.substring(0,input.length-1);
+	input = input.replace(/\]\[/g,","); //Replace brackets with commas
+	input = input.substring(0,input.length-1); //Remove the last element
 	var values = input.split(",");
 	decisions = new Array(values.length/3);
 	input.innerHTML = "";

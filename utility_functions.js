@@ -1,8 +1,10 @@
+//Simple select all function which takes an ID, sets it to focused and selects the elements
 function SelectAll(id){
 	document.getElementById(id).focus();
 	document.getElementById(id).select();
 }
 
+//Fills a circle given a location, radius, color and context
 function fillCircle(ctx,x,y,r,color){
 	ctx.fillStyle = color;
 	ctx.beginPath();
@@ -11,6 +13,7 @@ function fillCircle(ctx,x,y,r,color){
 	ctx.fill();
 }
 
+//Rotate one point around another point, angle is in radians
 function rotatePoint(rotatingPoint, fixedPoint, angle){
 	var s = Math.sin(angle);
 	var c = Math.cos(angle);
@@ -25,10 +28,12 @@ function rotatePoint(rotatingPoint, fixedPoint, angle){
 	return p;
 }
 
+//Get a random number between two values rounded to a certain decimal place
 function getRandomRoundedInRange(min,max,roundToDec){
 	return parseFloat(((Math.random()*(max-min))+min).toFixed(roundToDec),10);
 }
 
+//Synchronize the components which are docked to one another
 function SyncDisplayLocations(){
 	canvas.style.top = overlayCanvas.style.top;
 	canvas.style.left = overlayCanvas.style.left;
@@ -38,10 +43,13 @@ function SyncDisplayLocations(){
 	inputDivArea.style.left = canvas.style.left;
 }
 
+//Round a number to a certain interval
 function RoundToSignificance(num, sig){
 	return Math.round(num/sig)*sig;
 }
 
+//Get a unit vector (this most likely should only be called during initializations because although it's as 
+//efficient as can be for a single call, it likely contains duplicate calculations which can be reused later).
 function getUnitVector(v1,v2){
 	var d = Math.sqrt((v1.x-v2.x)*(v1.x-v2.x)+(v1.y-v2.y)*(v1.y-v2.y));
 	return new Vector2((v1.x-v2.x)/d,(v1.y-v2.y)/d);
