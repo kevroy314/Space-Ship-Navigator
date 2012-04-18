@@ -2,6 +2,15 @@
 function KeyDownEvent(e){
 	instructionMode=false; //Turn off instruction mode
 	if(document.activeElement.id=="inputCommandsTextbox") return true; //If we're in the textbox, pass the key event on
+	if(e.keyCode==192){ //` key
+		if(numericalMethod == euler)
+			numericalMethod = heun;
+		else if(numericalMethod == heun)
+			numericalMethod = rk4;
+		else if(numericalMethod == rk4)
+			numericalMethod = euler;
+		return false;
+	}
 	keyStates[e.keyCode] = true; //Otherwise, register the key is down
 	if(e.keyCode==17||e.keyCode==82) return true; //If it's CTRL+R, pass it on
 	return false; //Don't pass it on

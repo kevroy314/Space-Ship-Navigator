@@ -23,11 +23,13 @@ function GBodyField(GBodies){
 					netForce.y += forceArray[i][j].y;
 				}
 			}
-			//Perform Euler's Method
-			this.bodies[i].vel.x+=(netForce.x/this.bodies[i].m)*dt;
-			this.bodies[i].vel.y+=(netForce.y/this.bodies[i].m)*dt;
-			this.bodies[i].pos.x+=this.bodies[i].vel.x*dt;
-			this.bodies[i].pos.y+=this.bodies[i].vel.y*dt;
+			//Runge-Kutta
+			var new_x_vals = numericalMethod(netForce.x/this.bodies[i].m,this.bodies[i].pos.x,this.bodies[i].vel.x,dt);
+			var new_y_vals = numericalMethod(netForce.y/this.bodies[i].m,this.bodies[i].pos.y,this.bodies[i].vel.y,dt);
+			this.bodies[i].pos.x = new_x_vals.r;
+			this.bodies[i].vel.x = new_x_vals.v;
+			this.bodies[i].pos.y = new_y_vals.r;
+			this.bodies[i].vel.y = new_y_vals.v;
 		}
 	}
 	this.render = function(ctx){ //Main draw function for the field
@@ -102,7 +104,7 @@ function PlayerCharacter(startPosition,fuelCapacity,goalPosition){
 	this.vel = new Vector2(0,0); //Starts stationary
 	this.unitVel = new Vector2(1,0); //Unit vector for direction
 	this.orientation = 0.0; //Radians orientation
-	this.mass = 0.00000000001; //Mass is almost nothing
+	this.m = 0.00000000001; //Mass is almost nothing
 	this.markerSize = 5; //Size of the circles representing start and end points
 	this.decisionFrameCount = 0; //Counter to draw the decision lines
 	this.decisionArray = new Array(); //Not implemented
@@ -111,17 +113,21 @@ function PlayerCharacter(startPosition,fuelCapacity,goalPosition){
 	this.update = function(bodies, dt){ //Update the ship position based on forces acting on it
 		//Calculate forces
 		var netForce = new Vector2(0,0);
-		var myGBody = new GBody(this.pos,this.vel,this.mass);
+		var myGBody = new GBody(this.pos,this.vel,this.m);
 		for(var i = 0; i < bodies.length;i++){
 			var f = myGBody.calculateForce(bodies[i]);
 			netForce.x += f.x;
 			netForce.y += f.y;
 		}
-		//Euler's method
-		this.vel.x += netForce.x/this.mass*dt;
-		this.vel.y += netForce.y/this.mass*dt;
-		this.pos.x+=this.vel.x*dt;
-		this.pos.y+=this.vel.y*dt;
+		
+		//Runge-Kutta
+		var new_x_vals = numericalMethod(netForce.x/this.m,this.pos.x,this.vel.x,dt);
+		var new_y_vals = numericalMethod(netForce.y/this.m,this.pos.y,this.vel.y,dt);
+		this.pos.x = new_x_vals.r;
+		this.vel.x = new_x_vals.v;
+		this.pos.y = new_y_vals.r;
+		this.vel.y = new_y_vals.v;
+		
 		//Calculate distance to goal
 		this.distToGoal = Math.sqrt((this.pos.x-this.goalPos.x)*(this.pos.x-this.goalPos.x)+(this.pos.y-this.goalPos.y)*(this.pos.y-this.goalPos.y));
 		//Update best distance to goal

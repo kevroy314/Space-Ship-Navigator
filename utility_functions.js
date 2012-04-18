@@ -54,3 +54,24 @@ function getUnitVector(v1,v2){
 	var d = Math.sqrt((v1.x-v2.x)*(v1.x-v2.x)+(v1.y-v2.y)*(v1.y-v2.y));
 	return new Vector2((v1.x-v2.x)/d,(v1.y-v2.y)/d);
 }
+
+var rk4 = function(a,r,v,dt){
+	var a0    = a*r;
+	var a1    = a*(r + 0.5*dt*v + 0.125*dt*dt*a0);
+	var a2    = a*(r +     dt*v + 0.500*dt*dt*a1);
+	var new_r =    r +     dt*v + ((a0+2*a1)*dt*dt)/6;
+	var new_v =    v +            (dt*(a0+4*a1+a2))/6;
+	return {r: new_r, v: new_v};
+}
+
+var euler = function(a,r,v,dt){
+	var new_v = v+a*dt;
+	var new_r = r+v*dt+0.5*a*dt*dt;
+	return {r: new_r, v: new_v}
+}
+
+var heun = function(a,r,v,dt){
+	var new_v = v+2*a*dt;
+	var new_r = r+2*new_v*dt;
+	return {r: new_r, v: new_v};
+}
