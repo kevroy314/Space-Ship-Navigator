@@ -8,6 +8,9 @@ window.onresize = WindowResizeEvent;
 var outputDivArea;
 var inputDivArea;
 
+//Instruction Canvas
+var instructions;
+
 //Primary Canvas Variables
 var canvas;
 var context;
@@ -149,7 +152,8 @@ function Initialize(){
 	inputDivArea.style.top = parseInt(canvas.style.top,10)+canvas.height;
 	inputDivArea.style.left = canvas.style.left;
 
-	InitializeInstructionCanvas();
+	instructions = new InstructionsBackground();
+	instructions.InitializeInstructionCanvas();
 	
 	GameLoop();
 }

@@ -69,26 +69,20 @@
 				position:absolute;
 				top:25%;
 			}
-			.background{
-				position:absolute;
-			}
 		</style>
 	</head>
 	<body bgcolor="#000000" style="cursor:auto;">
-		<canvas id="instructionCanvas" class="background" width=800 height=600>
+		<canvas id="mainCanvas" width=400 height=248 style="z-index: 1">
 			Your browser does not support the HTML5 Canvas Element!
 		</canvas>
-		<canvas id="mainCanvas" width=400 height=248>
+		<canvas id="overlayCanvas" width=400 height=248 tabIndex="0" style="z-index: 1">
 			Your browser does not support the HTML5 Canvas Element!
 		</canvas>
-		<canvas id="overlayCanvas" width=400 height=248 tabIndex="0">
+		<canvas id="reportCanvas" width=350 height=600 tabIndex="1" style="z-index: 1">
 			Your browser does not support the HTML5 Canvas Element!
 		</canvas>
-		<canvas id="reportCanvas" width=350 height=600 tabIndex="1">
-			Your browser does not support the HTML5 Canvas Element!
-		</canvas>
-		<div id="initialParams" class="initial-params-div" tabIndex="2">Something went wrong!!! Try reloading?</div>
-		<div id="inputInstructions" class="input-instructions-div">
+		<div id="initialParams" class="initial-params-div" tabIndex="2" style="z-index: 1">Something went wrong!!! Try reloading?</div>
+		<div id="inputInstructions" class="input-instructions-div" style="z-index: 1">
 			<form name="inputForm">
 				<textarea name="inputCommands" id="inputCommandsTextbox" class="input-commands-textbox" onClick="SelectAll('inputCommandsTextbox')" tabIndex="3" placeholder="Enter your commands here as comma separated [Time,Radians_Direction,Fuel_Use] values...
          -Time will be rounded to the nearest time step. 
@@ -98,4 +92,4 @@
 			</form>
 		</div>
 	</body>
-</html>
+</html>	

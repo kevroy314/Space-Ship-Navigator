@@ -38,7 +38,7 @@ function HandleShipKeys(t){
 
 function HandleInterfaceKeys(){
 	if(keyStates[27]){ //ESC Key
-		fadeFlag = true; //Fade the instructions
+		instructions.fadeFlag = true; //Fade the instructions
 	}
 	if(keyStates[82]){ //R Key
 		restartFlag = true; //Restart the level
@@ -59,12 +59,10 @@ function WindowResizeEvent(){
 		overlayCanvas.style.left = canvas.style.left;
 		reportCanvas.style.top = (window.innerHeight-reportCanvas.height)/2;
 		reportCanvas.style.left = parseInt(canvas.style.left,10)-reportCanvas.width-boundryPadding;
-		instructionCanvas.width = document.body.offsetWidth;
-		instructionCanvas.height = document.body.offsetHeight;
-		if(!faded&&fadeAmount==0){
-			InitializeInstructions();
-		}
 	}
+	
+	//Resize Instructions
+	instructions.resize(document.body.offsetWidth,document.body.offsetHeight);
 	
 	//Make sure displays are synced
 	SyncDisplayLocations();
