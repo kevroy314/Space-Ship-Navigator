@@ -57,8 +57,7 @@ function WindowResizeEvent(){
 		canvas.style.left = (window.innerWidth-canvas.width)/2;
 		overlayCanvas.style.top = canvas.style.top;
 		overlayCanvas.style.left = canvas.style.left;
-		reportCanvas.style.top = (window.innerHeight-reportCanvas.height)/2;
-		reportCanvas.style.left = parseInt(canvas.style.left,10)-reportCanvas.width-boundryPadding;
+		report.reposition(parseInt(canvas.style.left,10)-reportCanvas.width-boundryPadding,(window.innerHeight-reportCanvas.height)/2);
 	}
 	
 	//Resize Instructions

@@ -11,6 +11,9 @@ var inputDivArea;
 //Instruction Canvas
 var instructions;
 
+//Report Canvas
+var report;
+
 //Primary Canvas Variables
 var canvas;
 var context;
@@ -21,6 +24,7 @@ var restartFlag = false;
 var newLevelFlag = true;
 var killScreenDisplayed = false;
 var instructionMode = false;
+var firstRun = true;
 
 //Keyboard State
 var keyStates;
@@ -130,7 +134,6 @@ function Initialize(){
 	}
 	
 	InitializeOverlayCanvas(canvas);
-	InitializeReportCanvas();
 	
 	context.fillStyle = gameStateTextColor;
 	context.fillText("Press R to Restart",canvas.width/3,canvas.height/3);
@@ -152,8 +155,14 @@ function Initialize(){
 	inputDivArea.style.top = parseInt(canvas.style.top,10)+canvas.height;
 	inputDivArea.style.left = canvas.style.left;
 
-	instructions = new InstructionsBackground();
-	instructions.InitializeInstructionCanvas();
+	report = new ReportCanvas();
+	report.InitializeReportCanvas();
+	
+	if(firstRun){
+		instructions = new InstructionsBackground();
+		instructions.InitializeInstructionCanvas();
+		firstRun = false;
+	}
 	
 	GameLoop();
 }
