@@ -1,0 +1,1 @@
+This is a simulation I've written in order to play with what I call the Spaceship Navigation Problem. See http://www.reddit.com/r/compsci/comments/rx4z1/spaceship_navigation_problem/ for a problem description. Run SpaceShipNavigator.htm to run the simulation. Note that it runs a lot smoother on old machines by closing the instruction overlay. Also, every element is draggable.
