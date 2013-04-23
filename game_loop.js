@@ -210,7 +210,7 @@ function Update(dt){
 	bodyField.update(dt);
 	pc.update(bodyField.bodies,dt);
 	
-	HandleKeyEvents();
+	HandleKeyEvents(currentTime);
 }
 
 function GameLoop(){
@@ -227,6 +227,12 @@ function GameLoop(){
 		killScreenDisplayed = true;
 		overlayRunning = false;
 		setTimeout(KillScreenLoop,renderInterval);
+		var data = "";
+		for(var i = 0; i < eventLog.length;i++)
+			data += eventLog[i].t +" "+eventLog[i].e +" ";
+		data += "\r\n";
+		eventLog = new Array();
+		var postTest = $.post('savedata.php',{data: data},function(e){});
 	}
 	else if(restartFlag==true)
 		Initialize();
