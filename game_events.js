@@ -29,23 +29,21 @@ function HandleKeyEvents(t){
 	HandleShipKeys(t);
 	HandleInterfaceKeys(t);
 }
-var eventLog = new Array();
+
 function HandleShipKeys(t){
 	if(keyStates[37]){ //Left Key
 		pc.turn(-pc.turnAccuity); //Turn the ship left
-		eventLog.push({t: t, e: 37});
 	}
 	if(keyStates[38]){ //Up Key
 		pc.thrust(pc.power); //Apply thrust forward
-		eventLog.push({t: t, e: 38});
+		eventLog.push({time: t, direction: pc.orientation, power: pc.power});
 	}
 	if(keyStates[39]){ //Right Key
 		pc.turn(pc.turnAccuity); //Turn the ship right
-		eventLog.push({t: t, e: 39});
 	}
 	if(keyStates[40]){ //Down Key
 		pc.thrust(-pc.power); //Apply thrust backwards
-		eventLog.push({t: t, e: 40});
+		eventLog.push({time: t, direction: pc.orientation, power: -pc.power});
 	}
 }
 

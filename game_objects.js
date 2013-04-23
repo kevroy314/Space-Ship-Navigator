@@ -190,6 +190,13 @@ function PlayerCharacter(startPosition,fuelCapacity,goalPosition){
 		this.unitVel.y = Math.sin(this.orientation);
 		
 	}
+	
+	//Set the ship orientation
+	this.setOrientation = function(direction){
+		this.orientation = direction;
+		this.unitVel.x = Math.cos(this.orientation);
+		this.unitVel.y = Math.sin(this.orientation);
+	}
 }
 
 //A simple object representing a decision the user makes

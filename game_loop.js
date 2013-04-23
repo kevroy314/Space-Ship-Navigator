@@ -29,6 +29,9 @@ var firstRun = true;
 //Keyboard State
 var keyStates;
 
+//User Result Logging
+var eventLog = new Array();
+
 //Global Timing Variables
 var currentTime = 0;
 var timeStep = 500;
@@ -198,17 +201,18 @@ function Update(dt){
 	elapsedTime += dt;
 	currentTime += dt;
 	
-	if(instructionMode&&lastDecision<decisions.length-1){
+	bodyField.update(dt);
+	pc.update(bodyField.bodies,dt);
+	
+	if(instructionMode&&lastDecision<decisions.length){
 		while(decisions[lastDecision].time==currentTime){
-			pc.turn(decisions[lastDecision].direction);
+			pc.setOrientation(decisions[lastDecision].direction);
 			pc.thrust(decisions[lastDecision].power);
 			pc.decisionFrameCount = 10;
 			lastDecision++;
+			if(lastDecision>=decisions.length) break;
 		}
 	}
-	
-	bodyField.update(dt);
-	pc.update(bodyField.bodies,dt);
 	
 	HandleKeyEvents(currentTime);
 }
@@ -227,12 +231,14 @@ function GameLoop(){
 		killScreenDisplayed = true;
 		overlayRunning = false;
 		setTimeout(KillScreenLoop,renderInterval);
-		var data = "";
-		for(var i = 0; i < eventLog.length;i++)
-			data += eventLog[i].t +" "+eventLog[i].e +" ";
-		data += "\r\n";
-		eventLog = new Array();
-		var postTest = $.post('savedata.php',{data: data},function(e){});
+		if(!instructionMode){
+			var data = "";
+			for(var i = 0; i < eventLog.length;i++)
+				data += eventLog[i].time +" "+eventLog[i].direction +" "+eventLog[i].power+"\t";
+			data += "\r\n";
+			var postTest = $.post('savedata.php',{data: data},function(e){});
+		}
+		eventLog.length=0;
 	}
 	else if(restartFlag==true)
 		Initialize();
@@ -289,16 +295,15 @@ function executeButtonClick(){
 	for(var i = 0; i < values.length/3;i++){
 		decisions[i] = new Decision();
 		decisions[i].time = RoundToSignificance(values[i*3],timeStep);
-		decisions[i].direction = values[i*3+1]%(2*Math.PI);
-		decisions[i].power = values[i*3+2]/pc.fuelRatio;
+		decisions[i].direction = +values[i*3+1];
+		decisions[i].power = +values[i*3+2];
 	}
 	decisions.sort(function(a,b){return (a.time>b.time)?1:((b.time>a.time)?-1:0);});
 	lastDecision = 0;
 	for(var i = 0; i < decisions.length;i++)
-		reformattedVal+="["+decisions[i].time+","+decisions[i].direction+","+decisions[i].power*pc.fuelRatio+"]";
+		reformattedVal+="["+decisions[i].time+","+decisions[i].direction+","+decisions[i].power+"]";
 	document.getElementById("inputCommandsTextbox").value = reformattedVal;
 	restartFlag = true;
 	newLevelFlag = false;
 	instructionMode = true;
-	Initialize();
 }
