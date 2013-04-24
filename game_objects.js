@@ -48,6 +48,14 @@ function GBodyField(GBodies){
 			}
 		}
 	}
+	this.toString = function(){ //Renders the bodies to a string for logging
+		var output = ""+this.bodies.length+" ";
+		var i;
+		for(i = 0; i < this.bodies.length-1;i++)
+			output+=this.bodies[i].toString()+" ";
+		output+=this.bodies[i].toString();
+		return output;
+	}
 }
 
 //An object representing a single gravitational object
@@ -80,6 +88,9 @@ function GBody(Position, Velocity, Mass){
 		dx*=Fmodified;
 		dy*=Fmodified;
 		return new Vector2(dx,dy);
+	}
+	this.toString = function(){ //Renders a body to a string for logging
+		return this.pos.x+" "+this.pos.y+" "+this.vel.x+" "+this.vel.y+" "+this.m;
 	}
 }
 

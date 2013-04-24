@@ -36,14 +36,14 @@ function HandleShipKeys(t){
 	}
 	if(keyStates[38]){ //Up Key
 		pc.thrust(pc.power); //Apply thrust forward
-		eventLog.push({time: t, direction: pc.orientation, power: pc.power});
+		eventLog.push({time: t, direction: pc.orientation, power: pc.power, bodies: bodyField.toString()});
 	}
 	if(keyStates[39]){ //Right Key
 		pc.turn(pc.turnAccuity); //Turn the ship right
 	}
 	if(keyStates[40]){ //Down Key
 		pc.thrust(-pc.power); //Apply thrust backwards
-		eventLog.push({time: t, direction: pc.orientation, power: -pc.power});
+		eventLog.push({time: t, direction: pc.orientation, power: -pc.power, bodies: bodyField.toString()});
 	}
 }
 

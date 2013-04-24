@@ -234,7 +234,7 @@ function GameLoop(){
 		if(!instructionMode){
 			var data = "";
 			for(var i = 0; i < eventLog.length;i++)
-				data += eventLog[i].time +" "+eventLog[i].direction +" "+eventLog[i].power+"\t";
+				data += eventLog[i].time +" "+eventLog[i].direction +" "+eventLog[i].power+" "+eventLog[i].bodies+"\t";
 			data += "\r\n";
 			var postTest = $.post('savedata.php',{data: data},function(e){});
 		}
